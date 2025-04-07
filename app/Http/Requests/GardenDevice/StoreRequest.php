@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\GardenDevice;
 
+use App\Models\GardenDevice;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
@@ -11,7 +12,7 @@ class StoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->can('create', $this->garden, GardenDevice::class);
     }
 
     /**
@@ -22,7 +23,7 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'serial_number' => 'required|string|max:255|exists:devices,serial_number',
         ];
     }
 }

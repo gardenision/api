@@ -11,12 +11,22 @@ class GardenController extends Controller
 {
     public function index(IndexRequest $request)
     {
-        return response()->json(Garden::all());
+        $user = $request->user();
+        $gardens = $user->gardens()->get();
+        return response()->json($gardens);
     }
 
     public function store(StoreRequest $request)
     {
-        $garden = Garden::create($request->validated());
+        $user = $request->user();
+
+        $garden = Garden::create([
+            'name' => $request->name,
+            'latitude' => $request->latitude ?? null,
+            'longitude' => $request->longitude ?? null,
+            'user_id' => $user->id,
+        ]);
+
         return response()->json($garden, 201);
     }
 

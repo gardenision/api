@@ -58,4 +58,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(UserRole::class, 'id', 'user_id');
     }
+
+    public function gardens()
+    {
+        return $this->hasMany(Garden::class, 'user_id', 'id');
+    }
 }

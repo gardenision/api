@@ -22,6 +22,8 @@ class ModuleController extends Controller
             'name' => $request->name,
             'type' => $request->type,
             'device_type_id' => $device_type->id,
+            'default_unit_type' => $request->default_unit_type,
+            'default_unit_value' => $request->default_unit_value,
         ];
 
         $module = Module::create($module);

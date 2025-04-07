@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\GardenDeviceType;
+namespace App\Http\Requests\GardenDeviceModule;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class IndexRequest extends FormRequest
+class DestroyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->can('delete', $this->garden, $this->garden_device, $this->garden_device_module);
     }
 
     /**

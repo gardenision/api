@@ -15,7 +15,8 @@ class StoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:gardens,name',
-            'description' => 'nullable|string|max:1000',
+            'latitude' => 'numeric',
+            'longitude' => 'numeric',
         ];
     }
 }

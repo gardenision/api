@@ -14,5 +14,12 @@ class Module extends Model
         'device_type_id',
         'name',
         'type',
+        'default_unit_type',
+        'default_unit_value',
     ];
+
+    public function type()
+    {
+        return $this->belongsTo(DeviceType::class, 'device_type_id');
+    }
 }

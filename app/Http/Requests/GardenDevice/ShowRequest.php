@@ -11,7 +11,7 @@ class ShowRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->can('view', $this->garden, $this->garden_device);
     }
 
     /**

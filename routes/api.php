@@ -5,6 +5,7 @@ use App\Http\Controllers\{
     RoleController, ProjectController, DeviceTypeController, 
     ModuleController, DeviceController, GardenController,
     GardenDeviceController,
+    GardenDeviceModuleController,
     GardenDeviceTypeController
 };
 use Illuminate\Http\Request;
@@ -39,11 +40,20 @@ Route::middleware([
         });
     });
     
-    Route::middleware('role:user')->group(function () {
+    Route::middleware('role:user,admin')->group(function () {
+        Route::apiResource('gardens', GardenController::class)->except(['show']);
         Route::prefix('gardens')->group(function () {
-            Route::apiResource('', GardenController::class);
-            Route::apiResource('devices', GardenDeviceController::class);
-            Route::apiResource('device-types', GardenDeviceTypeController::class);
+            Route::prefix('{garden}')->group(function () {
+                Route::prefix('devices')->group(function () {
+                    Route::apiResource('', GardenDeviceController::class)->except(['show', 'update']);
+                    Route::prefix('{garden_device}')->group(function () {
+                        Route::prefix('modules')->group(function () {
+                            Route::post('{module}', [GardenDeviceModuleController::class, 'store']);
+                            Route::apiResource('', GardenDeviceModuleController::class)->except(['store', 'show']);
+                        });
+                    });
+                });
+            });
         });
     });
 });

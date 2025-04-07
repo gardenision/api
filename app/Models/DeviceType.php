@@ -14,4 +14,14 @@ class DeviceType extends Model
         'project_id',
         'name',
     ];
+
+    public function modules()
+    {
+        return $this->hasMany(Module::class, 'device_type_id', 'id');
+    }
+
+    public function devices()
+    {
+        return $this->hasMany(Device::class, 'device_type_id', 'id');
+    }
 }

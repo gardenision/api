@@ -16,10 +16,11 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => [
-                'required', 'string', 'max:255',
+                'string', 'max:255',
                 Rule::unique('gardens', 'name')->ignore($this->garden->id),
             ],
-            'description' => 'nullable|string|max:1000',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ];
     }
 }

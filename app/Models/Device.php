@@ -16,4 +16,9 @@ class Device extends Model
         'name',
         'serial_number',
     ];
+
+    public function type()
+    {
+        return $this->belongsTo(DeviceType::class, 'device_type_id');
+    }
 }

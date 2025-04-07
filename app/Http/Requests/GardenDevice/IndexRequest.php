@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\GardenDevice;
 
+use App\Models\GardenDevice;
 use Illuminate\Foundation\Http\FormRequest;
 
 class IndexRequest extends FormRequest
@@ -11,7 +12,7 @@ class IndexRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->can('viewAny', GardenDevice::class);
     }
 
     /**

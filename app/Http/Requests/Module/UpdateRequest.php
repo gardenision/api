@@ -31,6 +31,8 @@ class UpdateRequest extends FormRequest
                 Rule::unique('modules', 'name')->ignore($this->module->id),
             ],
             'type' => 'string|max:100',
+            'default_unit_type' => 'string|max:100',
+            'default_unit_value' => 'string|max:255',
         ];
     }
 }

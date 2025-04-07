@@ -8,19 +8,13 @@ use Illuminate\Auth\Access\Response;
 
 class GardenPolicy
 {
-    private $role;
-
-    public function __construct(User $user)
-    {
-        $this->role = $user->role()->first();
-    }
 
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $this->role ? in_array($this->role->name, ['admin', 'user']) : false;
+        return in_array($user->role?->role?->name ?? '', ['admin', 'user']);
     }
 
     /**
@@ -28,7 +22,11 @@ class GardenPolicy
      */
     public function view(User $user, Garden $garden): bool
     {
-        return $this->role ? in_array($this->role->name, ['admin', 'user']) : false;
+        $role = $user->role?->role?->name;
+        if (! in_array($role ?? '', ['admin', 'user'])) return false;
+        if (in_array($role ?? '', ['user']) && $garden->user_id != $user->id) return false;
+        
+        return true;
     }
 
     /**
@@ -36,7 +34,7 @@ class GardenPolicy
      */
     public function create(User $user): bool
     {
-        return $this->role ? in_array($this->role->name, ['admin', 'user']) : false;
+        return in_array($user->role?->role?->name ?? '', ['admin', 'user']);
     }
 
     /**
@@ -44,7 +42,11 @@ class GardenPolicy
      */
     public function update(User $user, Garden $garden): bool
     {
-        return $this->role ? in_array($this->role->name, ['admin', 'user']) : false;
+        $role = $user->role?->role?->name;
+        if (! in_array($role ?? '', ['admin', 'user'])) return false;
+        if (in_array($role ?? '', ['user']) && $garden->user_id != $user->id) return false;
+        
+        return true;
     }
 
     /**
@@ -52,7 +54,11 @@ class GardenPolicy
      */
     public function delete(User $user, Garden $garden): bool
     {
-        return $this->role ? in_array($this->role->name, ['admin', 'user']) : false;
+        $role = $user->role?->role?->name;
+        if (! in_array($role ?? '', ['admin', 'user'])) return false;
+        if (in_array($role ?? '', ['user']) && $garden->user_id != $user->id) return false;
+        
+        return true;
     }
 
     /**
@@ -60,7 +66,11 @@ class GardenPolicy
      */
     public function restore(User $user, Garden $garden): bool
     {
-        return $this->role ? in_array($this->role->name, ['admin', 'user']) : false;
+        $role = $user->role?->role?->name;
+        if (! in_array($role ?? '', ['admin', 'user'])) return false;
+        if (in_array($role ?? '', ['user']) && $garden->user_id != $user->id) return false;
+        
+        return true;
     }
 
     /**
@@ -68,6 +78,10 @@ class GardenPolicy
      */
     public function forceDelete(User $user, Garden $garden): bool
     {
-        return $this->role ? in_array($this->role->name, ['admin', 'user']) : false;
+        $role = $user->role?->role?->name;
+        if (! in_array($role ?? '', ['admin', 'user'])) return false;
+        if (in_array($role ?? '', ['user']) && $garden->user_id != $user->id) return false;
+        
+        return true;
     }
 }
