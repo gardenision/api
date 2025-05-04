@@ -1,35 +1,49 @@
+# Base image
 FROM php:8.2-fpm
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
+# Install system dependencies
+RUN apt-get update
+
+RUN apt-get install -y \
     libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libpq-dev \
     zip \
     unzip \
     git \
     curl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql pdo_pgsql bcmath
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    nginx \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set workdir
+# Install Node.js and npm
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+
+# Set working directory
 WORKDIR /var/www/html
 
-# Salin file .env contoh (optional)
-COPY .env.example .env
-
-# Copy seluruh project Laravel
+# Copy application files
 COPY . .
 
-# Install Composer dependencies
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Expose port
-EXPOSE 8000
+# Install Node.js dependencies and build assets
+RUN npm install && npm run build
 
-# Jalankan Laravel server
-CMD php artisan serve --host=0.0.0.0 --port=8000
+# Set permissions for storage and bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Copy Nginx configuration
+COPY nginx.conf /etc/nginx/sites-enabled/default
+
+# Set environment variables from copy of .env.example file
+RUN cp .env.example .env
+
+# Expose port and start PHP-FPM & Nginx
+EXPOSE 80
+CMD service nginx start && php-fpm
