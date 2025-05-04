@@ -27,4 +27,9 @@ class GardenDeviceModule extends Model
     {
         return $this->belongsTo(Module::class, 'module_id');
     }
+
+    public function logs()
+    {
+        return $this->morphMany(Log::class, 'loggable');
+    }
 }

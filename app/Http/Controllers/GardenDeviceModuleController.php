@@ -28,8 +28,15 @@ class GardenDeviceModuleController extends Controller
         $garden_device_module = $garden_device->modules()->create([
             'module_id' => $module->id,
             'is_active' => true,
-            'unit_value' => $module->default_unit_value,
+            'unit_value' => $module->default_unit_value ?? null,
             'unit_type' => $module->default_unit_type,
+        ]);
+
+        $garden_device_module->logs()->create([
+            'level' => 'info',
+            'context' => [
+                'value' => $garden_device_module->unit_value
+            ],
         ]);
 
         return response()->json($garden_device_module, 201);
@@ -38,6 +45,13 @@ class GardenDeviceModuleController extends Controller
     public function update(UpdateRequest $request, Garden $garden, GardenDevice $garden_device, GardenDeviceModule $garden_device_module)
     {
         $garden_device_module->update($request->validated());
+        $garden_device_module->logs()->create([
+            'level' => 'info',
+            'context' => [
+                'value' => $garden_device_module->unit_value
+            ],
+        ]);
+
         return response()->json($garden_device_module);
     }
 

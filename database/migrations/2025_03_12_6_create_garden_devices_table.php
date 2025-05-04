@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('garden_id');
             $table->unsignedInteger('device_id');
+            $table->string('name');
             $table->timestamps();
             
             $table->foreign('garden_id')->references('id')->on('gardens')->onDelete('cascade');

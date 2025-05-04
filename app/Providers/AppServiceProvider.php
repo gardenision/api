@@ -7,12 +7,14 @@ use App\Models\Device;
 use App\Models\DeviceType;
 use App\Models\Garden;
 use App\Models\GardenDevice;
+use App\Models\Log;
 use App\Models\Module;
 use App\Models\Project;
 use App\Policies\DevicePolicy;
 use App\Policies\DeviceTypePolicy;
 use App\Policies\GardenDevicePolicy;
 use App\Policies\GardenPolicy;
+use App\Policies\LogPolicy;
 use App\Policies\ModulePolicy;
 use App\Policies\ProjectPolicy;
 use Illuminate\Support\Facades\Event;
@@ -41,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
             GardenDevice::class => GardenDevicePolicy::class,
             Module::class => ModulePolicy::class,
             Project::class => ProjectPolicy::class,
+            Log::class => LogPolicy::class,
         ]);
 
         Event::listen(

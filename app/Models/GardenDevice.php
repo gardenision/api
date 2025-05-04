@@ -13,6 +13,7 @@ class GardenDevice extends Model
     protected $fillable = [
         'garden_id',
         'device_id',
+        'name',
     ];
 
     public function modules()

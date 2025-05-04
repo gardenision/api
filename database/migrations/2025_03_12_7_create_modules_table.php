@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedInteger('device_type_id');
             $table->string('name');
             $table->string('type');
-            $table->string('default_unit_type');
+            $table->string('default_unit_type')->nullable();
             $table->string('default_unit_value');
             $table->timestamps();
 

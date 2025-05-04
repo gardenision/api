@@ -38,6 +38,7 @@ class GardenDeviceController extends Controller
 
             $garden_device = $garden->devices()->create([
                 'device_id' => $device->id,
+                'name' => $device->name,
             ]);
 
             $modules = $modules->toArray();

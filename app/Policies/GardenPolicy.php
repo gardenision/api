@@ -34,7 +34,10 @@ class GardenPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role?->role?->name ?? '', ['admin', 'user']);
+        $role = $user->role?->role?->name;
+        if (! in_array($role ?? '', ['admin', 'user'])) return false;
+        
+        return true;
     }
 
     /**

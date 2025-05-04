@@ -3,6 +3,9 @@
 namespace App\Policies;
 
 use App\Models\Analytic;
+use App\Models\Garden;
+use App\Models\GardenDevice;
+use App\Models\GardenDeviceModule;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -11,9 +14,15 @@ class AnalyticPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(User $user, Garden $garden, GardenDevice $garden_device, ?GardenDeviceModule $module = null): bool
     {
-        return false;
+        $role = $user->role?->role?->name;
+        if (! in_array($role ?? '', ['admin', 'user'])) return false;
+        if (in_array($role ?? '', ['user']) && $garden->user_id != $user->id) return false;
+        if ($garden_device->garden_id != $garden->id) return false;
+        if ($module && $module->garden_device_id != $garden_device->id) return false;
+
+        return true;
     }
 
     /**

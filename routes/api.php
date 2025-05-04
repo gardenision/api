@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\{
+    AnalyticController,
     AuthController,
     RoleController, ProjectController, DeviceTypeController, 
     ModuleController, DeviceController, GardenController,
     GardenDeviceController,
     GardenDeviceModuleController,
-    GardenDeviceTypeController
+    GardenDeviceTypeController,
+    LogController
 };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -48,7 +50,11 @@ Route::middleware([
                     Route::apiResource('', GardenDeviceController::class)->except(['show', 'update']);
                     Route::prefix('{garden_device}')->group(function () {
                         Route::prefix('modules')->group(function () {
-                            Route::post('{module}', [GardenDeviceModuleController::class, 'store']);
+                            Route::get('analytics', [AnalyticController::class, 'index']);
+                            Route::prefix('{module}')->group(function () {
+                                Route::post('', [GardenDeviceModuleController::class, 'store']);
+                                Route::post('logs', [LogController::class, 'store']);
+                            });
                             Route::apiResource('', GardenDeviceModuleController::class)->except(['store', 'show']);
                         });
                     });

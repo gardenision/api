@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedInteger('module_id');
             $table->boolean('is_active');
             $table->string('unit_value');
-            $table->string('unit_type');
+            $table->string('unit_type')->nullable();
             $table->timestamps();
             
             $table->foreign('garden_device_id')->references('id')->on('garden_devices')->onDelete('cascade');
