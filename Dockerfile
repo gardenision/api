@@ -27,9 +27,6 @@ COPY . .
 # Install Composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Install NPM dependencies dan build assets
-RUN npm install && npm run build
-
 # Expose port
 EXPOSE 8000
 
