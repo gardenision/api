@@ -28,8 +28,6 @@ COPY . .
 # Install Composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Expose port
-EXPOSE 8000
-
-# Jalankan Laravel server
-CMD php artisan serve --host=0.0.0.0 --port=8000
+# Expose port and start PHP-FPM & Nginx
+EXPOSE 80
+CMD service nginx start && php-fpm
