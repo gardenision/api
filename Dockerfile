@@ -28,6 +28,12 @@ COPY . .
 # Install Composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# Set permissions for storage and bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Copy Nginx configuration
+COPY nginx.conf /etc/nginx/sites-enabled/default
+
 # Expose port and start PHP-FPM & Nginx
 EXPOSE 80
 CMD service nginx start && php-fpm
