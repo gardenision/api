@@ -5,15 +5,24 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    zip \
+    unzip \
+    git \
+    curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql bcmath
 
-# Salin file .env.example ke dalam kontainer
-COPY .env.example /var/www/html/.env
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copy aplikasi Laravel
-COPY . /var/www/html
+# Set workdir
 WORKDIR /var/www/html
+
+# Salin file .env contoh (optional)
+COPY .env.example .env
+
+# Copy seluruh project Laravel
+COPY . .
 
 # Install Composer dependencies
 RUN composer install --no-dev --optimize-autoloader
@@ -21,7 +30,7 @@ RUN composer install --no-dev --optimize-autoloader
 # Install NPM dependencies dan build assets
 RUN npm install && npm run build
 
-# Expose port 8000
+# Expose port
 EXPOSE 8000
 
 # Jalankan Laravel server
