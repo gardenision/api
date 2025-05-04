@@ -14,7 +14,8 @@ RUN apt-get install -y \
     libxml2-dev \
     libzip-dev \
     nginx \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+    libpq-dev \
+    && docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
