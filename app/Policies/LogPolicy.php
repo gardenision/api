@@ -2,10 +2,12 @@
 
 namespace App\Policies;
 
+use App\Models\Device;
 use App\Models\Garden;
 use App\Models\GardenDevice;
 use App\Models\GardenDeviceModule;
 use App\Models\Log;
+use App\Models\Module;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -30,13 +32,15 @@ class LogPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, Garden $garden, GardenDevice $garden_device, GardenDeviceModule $module): bool
+    public function create(Device $device, Module $module, GardenDeviceModule $garden_device_module): bool
     {
-        $role = $user->role?->role?->name;
-        if (! in_array($role ?? '', ['admin', 'user'])) return false;
-        if (in_array($role ?? '', ['user']) && $garden->user_id != $user->id) return false;
-        if ($garden_device->garden_id != $garden->id) return false;
-        if ($module->garden_device_id != $garden_device->id) return false;
+        if (! $device->type->modules()->find($module->id)) {
+            return false;
+        }
+
+        if ($garden_device_module->module_id !== $module->id) {
+            return false;
+        }
 
         return true;
     }

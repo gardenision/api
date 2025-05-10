@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Log;
 
 use App\Models\Log;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
@@ -12,7 +13,19 @@ class StoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', $this->garden, $this->garden_device, $this->module);
+        if (! $this->input('device')) {
+            return false;
+        }
+
+        if (! $this->route('module')) {
+            return false;
+        }
+
+        if (! $this->input('garden_device_module')) {
+            return false;
+        }
+
+        return Gate::forUser($this->input('device'))->allows('create', [Log::class, $this->route('module'), $this->input('garden_device_module')]);
     }
 
     /**

@@ -19,20 +19,23 @@ class LogController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequest $request, Garden $garden, GardenDevice $garden_device, GardenDeviceModule $module)
+    public function store(StoreRequest $request, string $serial_number, Module $module)
     {
-        $module->unit_value = $request->context['value'];
-        $module->save();
+        $device = $request->device;
+        $garden_device_module = $request->garden_device_module;
+
+        $garden_device_module->unit_value = $request->context['value'];
+        $garden_device_module->save();
 
         $log = Log::create([
             'loggable_type' => GardenDeviceModule::class,
-            'loggable_id' => $module->id,
+            'loggable_id' => $garden_device_module->id,
             'level' => $request->level,
             'context' => $request->context,
         ]);
 
         return response()->json([
-            'module' => $module,
+            'module' => $garden_device_module->load('module'),
             'log' => $log,
         ]);
     }

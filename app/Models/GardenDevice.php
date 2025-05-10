@@ -20,4 +20,14 @@ class GardenDevice extends Model
     {
         return $this->hasMany(GardenDeviceModule::class, 'garden_device_id', 'id');
     }
+
+    public function device()
+    {
+        return $this->belongsTo(Device::class, 'device_id');
+    }
+
+    public function garden()
+    {
+        return $this->belongsTo(Garden::class, 'garden_id');
+    }
 }

@@ -17,7 +17,7 @@ class GardenDeviceController extends Controller
     public function index(IndexRequest $request)
     {
         $user = $request->user();
-        $gardens = $user->gardens()->get();
+        $gardens = $user->gardens()->with('devices')->get();
         return response()->json($gardens);
     }
 

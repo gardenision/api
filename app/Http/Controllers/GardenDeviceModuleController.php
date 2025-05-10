@@ -20,7 +20,7 @@ class GardenDeviceModuleController extends Controller
      */
     public function index(IndexRequest $request, Garden $garden, GardenDevice $garden_device)
     {
-        return response()->json(array_merge($garden_device->load('modules')->toArray(), ['garden' => array_merge($garden->toArray(), ['user' => $request->user()->toArray()])]));
+        return response()->json(array_merge($garden_device->load(['modules', 'modules.module'])->toArray(), ['garden' => array_merge($garden->toArray(), ['user' => $request->user()->toArray()])]));
     }
 
     public function store(StoreRequest $request, Garden $garden, GardenDevice $garden_device, Module $module)

@@ -4,7 +4,7 @@ use App\Http\Controllers\{
     AnalyticController,
     AuthController,
     RoleController, ProjectController, DeviceTypeController, 
-    ModuleController, DeviceController, GardenController,
+    ModuleController, DeviceController, DeviceTokenController, GardenController,
     GardenDeviceController,
     GardenDeviceModuleController,
     GardenDeviceTypeController,
@@ -38,6 +38,9 @@ Route::middleware([
             Route::group(['prefix' => 'device-types/{device_type}'], function () {
                 Route::apiResource('modules', ModuleController::class);
                 Route::apiResource('devices', DeviceController::class);
+                Route::group(['prefix' => 'devices/{device}'], function () {
+                    Route::apiResource('tokens', DeviceTokenController::class)->except(['show', 'update']);
+                });
             });
         });
     });
@@ -53,7 +56,6 @@ Route::middleware([
                             Route::get('analytics', [AnalyticController::class, 'index']);
                             Route::prefix('{module}')->group(function () {
                                 Route::post('', [GardenDeviceModuleController::class, 'store']);
-                                Route::post('logs', [LogController::class, 'store']);
                             });
                             Route::apiResource('', GardenDeviceModuleController::class)->except(['store', 'show']);
                         });
@@ -62,4 +64,6 @@ Route::middleware([
             });
         });
     });
+
+    Route::post('device/{serial_number}/module/{module}/logs', [LogController::class, 'store'])->middleware('auth.device');
 });
