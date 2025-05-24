@@ -12,10 +12,11 @@ class UserController extends Controller
      */
     public function user(Request $request)
     {
+        $user = $request->user()->load('role.role')->toArray();
+        $user['role'] = $user['role']['role'] ?? null;
+        
         return response()->json([
-            'data' => array_merge($request->user()->toArray(), [
-                'role' => $request->user()->role->toArray(),
-            ]),
+            'data' => $user,
         ]);
     }
 
