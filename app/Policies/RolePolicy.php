@@ -4,23 +4,15 @@ namespace App\Policies;
 
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class RolePolicy
 {
-    private $role;
-
-    public function __construct(User $user)
-    {
-        $this->role = $user->role()->first();
-    }
-
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $this->role ? in_array($this->role->name, ['admin']) : false;
+        return in_array($user->role?->role?->name ?? '', ['admin']);
     }
 
     /**
@@ -28,7 +20,7 @@ class RolePolicy
      */
     public function view(User $user, Role $role): bool
     {
-        return $this->role ? in_array($this->role->name, ['admin']) : false;
+        return in_array($user->role?->role?->name ?? '', ['admin']);
     }
 
     /**
@@ -36,7 +28,7 @@ class RolePolicy
      */
     public function create(User $user): bool
     {
-        return $this->role ? in_array($this->role->name, ['admin']) : false;
+        return in_array($user->role?->role?->name ?? '', ['admin']);
     }
 
     /**
@@ -44,7 +36,7 @@ class RolePolicy
      */
     public function update(User $user, Role $role): bool
     {
-        return $this->role ? in_array($this->role->name, ['admin']) : false;
+        return in_array($user->role?->role?->name ?? '', ['admin']);
     }
 
     /**
@@ -52,7 +44,7 @@ class RolePolicy
      */
     public function delete(User $user, Role $role): bool
     {
-        return $this->role ? in_array($this->role->name, ['admin']) : false;
+        return in_array($user->role?->role?->name ?? '', ['admin']);
     }
 
     /**
@@ -60,7 +52,7 @@ class RolePolicy
      */
     public function restore(User $user, Role $role): bool
     {
-        return $this->role ? in_array($this->role->name, ['admin']) : false;
+        return in_array($user->role?->role?->name ?? '', ['admin']);
     }
 
     /**
@@ -68,6 +60,6 @@ class RolePolicy
      */
     public function forceDelete(User $user, Role $role): bool
     {
-        return $this->role ? in_array($this->role->name, ['admin']) : false;
+        return in_array($user->role?->role?->name ?? '', ['admin']);
     }
 }
