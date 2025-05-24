@@ -13,7 +13,9 @@ class UserController extends Controller
     public function user(Request $request)
     {
         return response()->json([
-            'data' => $request->user(),
+            'data' => array_merge($request->user()->toArray(), [
+                'role' => $request->user()->role->toArray(),
+            ]),
         ]);
     }
 
