@@ -10,9 +10,9 @@ use App\Models\Project;
 
 class DeviceTypeController extends Controller
 {
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request, Project $project)
     {
-        return response()->json(DeviceType::all());
+        return response()->json($project->device_types);
     }
 
     public function store(StoreRequest $request, Project $project)

@@ -8,12 +8,13 @@ use App\Http\Requests\Device\UpdateRequest;
 use App\Models\Device;
 use App\Models\DeviceType;
 use App\Models\Project;
+use Illuminate\Http\Request;
 
 class DeviceController extends Controller
 {
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request, Project $project, DeviceType $device_type)
     {
-        return response()->json(Device::all());
+        return response()->json($device_type->devices);
     }
 
     public function store(StoreRequest $request, Project $project, DeviceType $device_type)
@@ -29,7 +30,7 @@ class DeviceController extends Controller
         return response()->json($device, 201);
     }
 
-    public function show(Device $device)
+    public function show(Request $request, Project $project, DeviceType $device_type, Device $device)
     {
         return response()->json($device);
     }

@@ -11,7 +11,9 @@ use App\Models\GardenDevice;
 use App\Models\Log;
 use App\Models\Module;
 use App\Models\Project;
+use App\Models\Setting;
 use App\Policies\DevicePolicy;
+use App\Policies\DeviceSettingPolicy;
 use App\Policies\DeviceTokenPolicy;
 use App\Policies\DeviceTypePolicy;
 use App\Policies\GardenDevicePolicy;
@@ -50,6 +52,8 @@ class AppServiceProvider extends ServiceProvider
             Log::class => LogPolicy::class,
             DeviceToken::class => DeviceTokenPolicy::class,
         ]);
+
+        Gate::policy(Setting::class, DeviceSettingPolicy::class);
 
         Event::listen(
             AssignRole::class,

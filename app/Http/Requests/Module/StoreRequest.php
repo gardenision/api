@@ -26,7 +26,7 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|unique:modules,name|max:255',
+            'name' => 'required|string|max:255',
             'type' => 'required|string|max:100|in:sensor,actuator',
             'default_unit_type' => 'nullable|string|max:100',
             'default_unit_value' => 'required|string|max:255',

@@ -11,13 +11,18 @@ use App\Models\Project;
 
 class ModuleController extends Controller
 {
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request, Project $project, DeviceType $device_type)
     {
-        return response()->json(Module::all());
+        return response()->json($device_type->modules);
     }
 
     public function store(StoreRequest $request, Project $project, DeviceType $device_type)
     {
+        $duplicate = Module::where('name', $request->name)->where('device_type_id', $device_type->id)->first();
+        if ($duplicate) {
+            return response()->json(['message' => 'Module already exists'], 409);
+        }
+
         $module = [
             'name' => $request->name,
             'type' => $request->type,

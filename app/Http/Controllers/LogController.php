@@ -19,25 +19,85 @@ class LogController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequest $request, string $serial_number, Module $module)
+    public function store(StoreRequest $request, string $serial_number, Module $module = null)
     {
-        $device = $request->device;
-        $garden_device_module = $request->garden_device_module;
+        $garden_device = $request->garden_device ?? null;
+        $garden_device_module = $request->garden_device_module ?? null;
 
-        $garden_device_module->unit_value = $request->context['value'];
-        $garden_device_module->save();
+        // initialize where
+        $where = [];
 
-        $log = Log::create([
-            'loggable_type' => GardenDeviceModule::class,
-            'loggable_id' => $garden_device_module->id,
+        // initialize response
+        $response = [];
+
+        if ($garden_device_module) {
+            $where['loggable_type'] = GardenDeviceModule::class;
+            $where['loggable_id'] = $garden_device_module->id;
+
+            $garden_device_module->unit_value = $request->context['value'];
+            $garden_device_module->save();
+
+            $response['module'] = $garden_device_module->load('module');
+        } else if ($garden_device) {
+            $where['loggable_type'] = GardenDevice::class;
+            $where['loggable_id'] = $garden_device->id;
+
+            if ($request->level !== 'info') {
+
+                // when data is setting, we need to update the setting
+                if ($request->level === 'setting.update' && is_array($request->context)) {
+                    $this->updateSetting($garden_device, $request->context);
+                }
+
+                $where['level'] = 'info';
+
+            }
+        } else {
+            return response()->json(['message' => 'Device not found'], 404);
+        }
+
+        $updated_data = array_merge($where, [
             'level' => $request->level,
             'context' => $request->context,
         ]);
 
-        return response()->json([
-            'module' => $garden_device_module->load('module'),
-            'log' => $log,
-        ]);
+        $log = Log::create($updated_data);
+
+        $response['log'] = $log;
+
+        return response()->json($response);
+    }
+
+    private function updateSetting(GardenDevice $garden_device, array $context)
+    {
+        foreach ($context as $key => $value) {
+            if (is_string($key)) {
+                $setting = $garden_device->settings()->where(['key' => $key])->first();
+                if ($setting) {
+                    $updated_data_setting = [];
+                    $updated_data_setting_allowed = [
+                        'value',
+                        'active',
+                    ];
+
+                    foreach ($updated_data_setting_allowed as $updated_data_setting_allowed_key) {
+                        if (isset($value[$updated_data_setting_allowed_key])) {
+                            if ($updated_data_setting_allowed_key === 'active' && $value[$updated_data_setting_allowed_key] === true) {
+                                $updated_data_setting['last_actived_at'] = now();
+                            } else if ($updated_data_setting_allowed_key === 'active' && $value[$updated_data_setting_allowed_key] === false) {
+                                $updated_data_setting['last_inactived_at'] = now();
+                            }
+
+                            $updated_data_setting[$updated_data_setting_allowed_key] = $value[$updated_data_setting_allowed_key];
+                        }
+                    }
+
+                    if (count($updated_data_setting)) {
+                        $setting = $setting->update($updated_data_setting);
+                    }
+                }
+            }
+        }
     }
 
     /**

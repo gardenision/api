@@ -30,4 +30,14 @@ class GardenDevice extends Model
     {
         return $this->belongsTo(Garden::class, 'garden_id');
     }
+
+    public function settings()
+    {
+        return $this->morphMany(Setting::class, 'settingable');
+    }
+
+    public function logs()
+    {
+        return $this->morphMany(Log::class, 'loggable');
+    }
 }

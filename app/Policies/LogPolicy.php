@@ -32,13 +32,13 @@ class LogPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(Device $device, Module $module, GardenDeviceModule $garden_device_module): bool
+    public function create(Device $device, ?Module $module = null, ?GardenDeviceModule $garden_device_module = null): bool
     {
-        if (! $device->type->modules()->find($module->id)) {
+        if ($module && ! $device->type->modules()->find($module->id)) {
             return false;
         }
 
-        if ($garden_device_module->module_id !== $module->id) {
+        if ($garden_device_module && $garden_device_module->module_id !== $module->id) {
             return false;
         }
 

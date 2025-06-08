@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Device;
+use App\Models\GardenDevice;
 use App\Models\GardenDeviceModule;
 use Closure;
 use Illuminate\Http\Request;
@@ -30,11 +31,7 @@ class AuthenticateDevice
 
         $serial_number = $request->route('serial_number');
 
-        if (!$request->route('module')) {
-            return response()->json(['message' => 'Module not provided'], 401);
-        }
-
-        $module = $request->route('module');
+        $module = $request->route('module') ?? null;
 
         $accessToken = PersonalAccessToken::findToken($token);
 
@@ -42,20 +39,30 @@ class AuthenticateDevice
             return response()->json(['message' => 'Unauthorized'], 401);
         }
         
-        if ($accessToken->tokenable->serial_number !== $request->route('serial_number')) {
+        if ($accessToken->tokenable->serial_number !== $serial_number) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
-        $garden_device_module = GardenDeviceModule::where('module_id', $module->id)->whereHas('garden_device.device', function ($query) use ($module) {
-            $query->where('device_type_id', $module->device_type_id);
-        })->first();
+        $data['device'] = $accessToken->tokenable;
+        $data['garden_device_module'] = null;
 
-        if (!$garden_device_module) {
-            return response()->json(['message' => 'Forbidden'], 403);
+        if ($module) {
+            $garden_device_module = GardenDeviceModule::where('module_id', $module->id)->whereHas('garden_device.device', function ($query) use ($module) {
+                $query->where('device_type_id', $module->device_type_id);
+            })->first();
+    
+            if (!$garden_device_module) {
+                return response()->json(['message' => 'Forbidden'], 403);
+            }
+
+            $data['garden_device_module'] = $garden_device_module;
+        } else {
+            $garden_device = GardenDevice::where('device_id', $data['device']->id)->first();
+            $data['garden_device'] = $garden_device;
         }
 
         // Login the device
-        $request->merge(['device' => $accessToken->tokenable, 'garden_device_module' => $garden_device_module]);
+        $request->merge($data);
 
         return $next($request);
     }

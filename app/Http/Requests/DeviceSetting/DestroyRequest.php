@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Http\Requests\Analytic;
+namespace App\Http\Requests\DeviceSetting;
 
-use App\Models\Analytic;
 use Illuminate\Foundation\Http\FormRequest;
 
-class IndexRequest extends FormRequest
+class DestroyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user()->can('viewAny', $this->garden, $this->garden_device ?? null, $this->module ?? null);
+        return $this->user()->can('update', $this->setting);
     }
 
     /**

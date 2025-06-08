@@ -14,11 +14,10 @@ use Illuminate\Support\Facades\DB;
 
 class GardenDeviceController extends Controller
 {
-    public function index(IndexRequest $request)
+    public function index(IndexRequest $request, Garden $garden)
     {
-        $user = $request->user();
-        $gardens = $user->gardens()->with('devices')->get();
-        return response()->json($gardens);
+        $garden['devices'] = $garden->devices()->get();
+        return response()->json($garden);
     }
 
     public function store(StoreRequest $request, Garden $garden)

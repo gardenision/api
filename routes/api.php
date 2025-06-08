@@ -4,11 +4,12 @@ use App\Http\Controllers\{
     AnalyticController,
     AuthController,
     RoleController, ProjectController, DeviceTypeController, 
-    ModuleController, DeviceController, DeviceTokenController, GardenController,
+    ModuleController, DeviceController, DeviceSettingController, DeviceTokenController, GardenController,
     GardenDeviceController,
     GardenDeviceModuleController,
     GardenDeviceTypeController,
-    LogController
+    LogController,
+    SettingController
 };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -53,17 +54,21 @@ Route::middleware([
                     Route::apiResource('', GardenDeviceController::class)->except(['show', 'update']);
                     Route::prefix('{garden_device}')->group(function () {
                         Route::prefix('modules')->group(function () {
-                            Route::get('analytics', [AnalyticController::class, 'index']);
+                            Route::get('analytics', [AnalyticController::class, 'module']);
                             Route::prefix('{module}')->group(function () {
                                 Route::post('', [GardenDeviceModuleController::class, 'store']);
                             });
                             Route::apiResource('', GardenDeviceModuleController::class)->except(['store', 'show']);
                         });
+                        Route::apiResource('settings', DeviceSettingController::class)->except(['show']);
+                        Route::get('analytics', [AnalyticController::class, 'device']);
                     });
                 });
             });
         });
     });
 
+    Route::get('device/{serial_number}/settings', [DeviceSettingController::class, 'show_not_activate'])->middleware('auth.device');
+    Route::post('device/{serial_number}/logs', [LogController::class, 'store'])->middleware('auth.device');
     Route::post('device/{serial_number}/module/{module}/logs', [LogController::class, 'store'])->middleware('auth.device');
 });

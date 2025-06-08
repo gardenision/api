@@ -14,4 +14,9 @@ class Project extends Model
         'name',
         'description',
     ];
+
+    public function device_types()
+    {
+        return $this->hasMany(DeviceType::class);
+    }
 }

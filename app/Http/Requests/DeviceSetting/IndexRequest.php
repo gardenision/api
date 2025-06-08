@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Analytic;
+namespace App\Http\Requests\DeviceSetting;
 
-use App\Models\Analytic;
+use App\Models\Setting;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class IndexRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class IndexRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('viewAny', $this->garden, $this->garden_device ?? null, $this->module ?? null);
+        return $this->user()->can('viewAny', Setting::class);
     }
 
     /**

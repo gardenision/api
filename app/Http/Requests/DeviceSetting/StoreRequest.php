@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Requests\Analytic;
+namespace App\Http\Requests\DeviceSetting;
 
-use App\Models\Analytic;
+use App\Models\Setting;
 use Illuminate\Foundation\Http\FormRequest;
 
-class IndexRequest extends FormRequest
+class StoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user()->can('viewAny', $this->garden, $this->garden_device ?? null, $this->module ?? null);
+        return $this->user()->can('viewAny', Setting::class);
     }
 
     /**
@@ -23,7 +23,10 @@ class IndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'key' => ['required', 'string', 'max:255'],
+            'value' => ['string', 'max:255'],
+            'type' => ['string', 'max:255'],
+            'active' => ['boolean'],
         ];
     }
 }

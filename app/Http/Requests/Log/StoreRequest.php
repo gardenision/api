@@ -17,15 +17,19 @@ class StoreRequest extends FormRequest
             return false;
         }
 
-        if (! $this->route('module')) {
-            return false;
+        $allowed = [
+            Log::class
+        ];
+
+        if ($this->route('module')) {
+            $allowed[] = $this->route('module');
         }
 
-        if (! $this->input('garden_device_module')) {
-            return false;
+        if ($this->input('garden_device_module')) {
+            $allowed[] = $this->input('garden_device_module');
         }
 
-        return Gate::forUser($this->input('device'))->allows('create', [Log::class, $this->route('module'), $this->input('garden_device_module')]);
+        return Gate::forUser($this->input('device'))->allows('create', $allowed);
     }
 
     /**
@@ -38,7 +42,7 @@ class StoreRequest extends FormRequest
         return [
             'level' => ['required', 'string'],
             'context' => ['required', 'array'],
-            'context.value' => ['required', 'string'],
+            'context.value' => ['required_if:level,info', 'string'],
         ];
     }
 }

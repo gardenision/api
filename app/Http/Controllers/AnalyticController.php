@@ -14,14 +14,14 @@ class AnalyticController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(IndexRequest $request, Garden $garden, GardenDevice $garden_device, ?GardenDeviceModule $module = null)
+    public function module(IndexRequest $request, Garden $garden, GardenDevice $garden_device, ?GardenDeviceModule $module = null)
     {
         $user = $request->user();
 
         if (! $module) {
             $modules = $garden_device->modules()->with('module')->get();
         } else {
-            $modules = [$module->load('module')];
+            $modules = [$module->with('module')->get()];
         }
 
         $logs = [
@@ -30,49 +30,42 @@ class AnalyticController extends Controller
         ];
 
         foreach ($modules as $module) {
-            $logs[$module->module->type][$module->id] = $module;
-
             $module_logs = $module->logs();
             if ($request->start_date && $request->end_date) {
                 $module_logs = $module_logs->whereBetween('created_at', [$request->start_date, $request->end_date]);
             }
             $module_logs = $module_logs->get();
 
-            $logs[$module->module->type][$module->id]['logs'] = $module_logs;
+            $logs[$module->module->type][] = array_merge($module->toArray(), ['logs' => $module_logs]);
         }
 
         return response()->json($logs);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function device(IndexRequest $request, Garden $garden, ?GardenDevice $garden_device = null)
     {
-        //
-    }
+        $user = $request->user();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        if (! $garden_device) {
+            $devices = $garden->devices()->get();
+        } else {
+            $devices = [$garden_device];
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $logs = [
+            'device' => [],
+        ];
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        foreach ($devices as $device) {
+            $device_logs = $device->logs();
+            if ($request->start_date && $request->end_date) {
+                $device_logs = $device_logs->whereBetween('created_at', [$request->start_date, $request->end_date]);
+            }
+            $device_logs = $device_logs->get();
+
+            $logs['device'][] = array_merge($device->toArray(), ['logs' => $device_logs]);
+        }
+
+        return response()->json($logs);
     }
 }
