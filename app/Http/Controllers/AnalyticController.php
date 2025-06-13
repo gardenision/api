@@ -31,9 +31,17 @@ class AnalyticController extends Controller
 
         foreach ($modules as $module) {
             $module_logs = $module->logs();
-            if ($request->start_date && $request->end_date) {
-                $module_logs = $module_logs->whereBetween('created_at', [$request->start_date, $request->end_date]);
+
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
+
+            if (! $start_date ) $start_date = now()->subDays(7)->startOfDay();
+            if (! $end_date ) $end_date = now()->endOfDay();
+
+            if ($start_date && $end_date) {
+                $module_logs = $module_logs->whereBetween('created_at', [$start_date, $end_date]);
             }
+            
             $module_logs = $module_logs->get();
 
             $logs[$module->module->type][] = array_merge($module->toArray(), ['logs' => $module_logs]);
@@ -58,9 +66,17 @@ class AnalyticController extends Controller
 
         foreach ($devices as $device) {
             $device_logs = $device->logs();
-            if ($request->start_date && $request->end_date) {
-                $device_logs = $device_logs->whereBetween('created_at', [$request->start_date, $request->end_date]);
+            
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
+
+            if (! $start_date ) $start_date = now()->subDays(7)->startOfDay();
+            if (! $end_date ) $end_date = now()->endOfDay();
+
+            if ($start_date && $end_date) {
+                $device_logs = $device_logs->whereBetween('created_at', [$start_date, $end_date]);
             }
+
             $device_logs = $device_logs->get();
 
             $logs['device'][] = array_merge($device->toArray(), ['logs' => $device_logs]);
