@@ -9,4 +9,21 @@ class Analytic extends Model
 {
     /** @use HasFactory<\Database\Factories\ModuleFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'analyticable_type',
+        'analyticable_id',
+        'timestamp',
+        'type',
+        'data',
+    ];
+
+    protected $casts = [
+        'data' => 'array',
+    ];
+
+    public function analyticable()
+    {
+        return $this->morphTo();
+    }
 }

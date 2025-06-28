@@ -20,7 +20,7 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|unique:device_types,name|max:255',
+            'name' => 'required|string|max:255',
         ];
     }
 }

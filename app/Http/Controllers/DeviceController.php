@@ -19,6 +19,11 @@ class DeviceController extends Controller
 
     public function store(StoreRequest $request, Project $project, DeviceType $device_type)
     {
+        $duplicate = Device::where('name', $request->name)->where('device_type_id', $device_type->id)->first();
+        if ($duplicate) {
+            return response()->json(['message' => 'Device name already exists'], 409);
+        }
+
         $device = [
             'project_id' => $project->id,
             'device_type_id' => $device_type->id,
@@ -37,13 +42,18 @@ class DeviceController extends Controller
 
     public function update(UpdateRequest $request, Project $project, DeviceType $device_type, Device $device)
     {
+        $duplicate = Device::where('name', $request->name)->where('device_type_id', $device_type->id)->where('id', '!=', $device->id)->first();
+        if ($duplicate) {
+            return response()->json(['message' => 'Device name already exists'], 409);
+        }
+        
         $device->update($request->validated());
         return response()->json($device);
     }
 
-    public function destroy(DestroyRequest $request, Project $project, DeviceType $device_type, Device $device)
-    {
-        $device->delete();
-        return response()->json(null, 204);
-    }
+    // public function destroy(DestroyRequest $request, Project $project, DeviceType $device_type, Device $device)
+    // {
+    //     $device->delete();
+    //     return response()->json(null, 204);
+    // }
 }

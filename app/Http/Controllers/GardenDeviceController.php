@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AddActuator;
+use App\Events\AddDevice;
+use App\Events\AddSensor;
+use App\Events\SubActuator;
+use App\Events\SubDevice;
+use App\Events\SubSensor;
 use App\Http\Requests\GardenDevice\DestroyRequest;
 use App\Http\Requests\GardenDevice\IndexRequest;
 use App\Http\Requests\GardenDevice\StoreRequest;
@@ -32,13 +38,16 @@ class GardenDeviceController extends Controller
             $modules = $device->type->modules()->get();
 
             if (! $modules->count()) {
-                throw new \Exception('Device has no modules');
+                DB::rollBack();
+                return response()->json(['message' => 'Device has no modules'], 409);
             }
 
             $garden_device = $garden->devices()->create([
                 'device_id' => $device->id,
                 'name' => $device->name,
             ]);
+
+            event(new AddDevice($garden_device));
 
             $modules = $modules->toArray();
 
@@ -54,18 +63,53 @@ class GardenDeviceController extends Controller
 
             $garden_device->modules()->insert($modules);
 
+            $modules = $garden_device->modules()->get();
+
+            foreach ($modules as $module) {
+                if ($module->module->type === 'sensor') {
+                    event(new AddSensor($module));
+                } else if ($module->module->type === 'actuator') {
+                    event(new AddActuator($module));
+                }
+            }
+
             DB::commit();
 
-            return response()->json($garden_device->load('modules'), 201);
+            return response()->json(array_merge($garden_device->toArray(), ['modules' => $modules]), 201);
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
         }
     }
 
-    public function destroy(DestroyRequest $request, Garden $garden, GardenDevice $garden_device)
-    {
-        $garden_device->delete();
-        return response()->json(null, 204);
-    }
+    // public function destroy(DestroyRequest $request, Garden $garden, GardenDevice $garden_device)
+    // {
+    //     try {
+    //         DB::beginTransaction();
+
+    //         $tmp_garden_device = $garden_device;
+    //         $garden_device->delete();
+            
+    //         event(new SubDevice($tmp_garden_device));
+
+    //         $modules = $garden_device->modules()->get();
+
+    //         foreach ($modules as $module) {
+    //             if ($module->module->type === 'sensor') {
+    //                 event(new SubSensor($module));
+    //             } else if ($module->module->type === 'actuator') {
+    //                 event(new SubActuator($module));
+    //             }
+    //         }
+            
+    //         DB::commit();
+    //         return response()->json(null, 204);
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+
+    //         $this->log("ERROR GardenDeviceController::destroy : " . json_encode($e));
+
+    //         throw $e;
+    //     }
+    // }
 }

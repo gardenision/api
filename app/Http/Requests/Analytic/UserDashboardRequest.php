@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Requests\GardenDevice;
+namespace App\Http\Requests\Analytic;
 
-use App\Models\GardenDevice;
+use App\Models\Analytic;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
-class StoreRequest extends FormRequest
+class UserDashboardRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', [GardenDevice::class, $this->garden]);
+        return Gate::forUser($this->user())->allows('viewAny', [Analytic::class, 'user', 'admin']);
     }
 
     /**
@@ -23,7 +24,7 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'serial_number' => 'required|string|max:255|exists:devices,serial_number',
+            //
         ];
     }
 }

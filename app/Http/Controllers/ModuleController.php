@@ -42,13 +42,18 @@ class ModuleController extends Controller
 
     public function update(UpdateRequest $request, Project $project, DeviceType $device_type, Module $module)
     {
+        $duplicate = Module::where('name', $request->name)->where('device_type_id', $device_type->id)->where('id', '!=', $module->id)->first();
+        if ($duplicate) {
+            return response()->json(['message' => 'Module name already exists'], 409);
+        }
+        
         $module->update($request->validated());
         return response()->json($module);
     }
 
-    public function destroy(DestroyRequest $request, Module $module)
-    {
-        $module->delete();
-        return response()->json(null, 204);
-    }
+    // public function destroy(DestroyRequest $request, Module $module)
+    // {
+    //     $module->delete();
+    //     return response()->json(null, 204);
+    // }
 }

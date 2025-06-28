@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('analytics', function (Blueprint $table) {
             $table->integer('analyticable_id')->nullable()->change();
             $table->string('analyticable_type')->nullable()->change();
+            $table->timestamp('timestamp')->useCurrent()->change();
         });
     }
 

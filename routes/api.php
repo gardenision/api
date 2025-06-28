@@ -32,13 +32,14 @@ Route::middleware([
     Route::put('/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
 
     Route::middleware('role:admin')->group(function () {
+        Route::get('project', [AnalyticController::class, 'adminDashbaord'])->name('admin.dashboard');
         Route::apiResource('roles', RoleController::class);
-        Route::apiResource('projects', ProjectController::class);
+        Route::apiResource('projects', ProjectController::class)->except(['destroy']);
         Route::group(['prefix' => 'projects/{project}'], function () {
-            Route::apiResource('device-types', DeviceTypeController::class);
+            Route::apiResource('device-types', DeviceTypeController::class)->except(['destroy']);
             Route::group(['prefix' => 'device-types/{device_type}'], function () {
-                Route::apiResource('modules', ModuleController::class);
-                Route::apiResource('devices', DeviceController::class);
+                Route::apiResource('modules', ModuleController::class)->except(['destroy']);
+                Route::apiResource('devices', DeviceController::class)->except(['destroy']);
                 Route::group(['prefix' => 'devices/{device}'], function () {
                     Route::apiResource('tokens', DeviceTokenController::class)->except(['show', 'update']);
                 });
@@ -47,18 +48,22 @@ Route::middleware([
     });
     
     Route::middleware('role:user,admin')->group(function () {
-        Route::apiResource('gardens', GardenController::class)->except(['show']);
+        Route::get('garden', [AnalyticController::class, 'userDashbaord'])->name('user.dashboard');
+        Route::apiResource('gardens', GardenController::class)->except(['show', 'destroy']);
         Route::prefix('gardens')->group(function () {
             Route::prefix('{garden}')->group(function () {
                 Route::prefix('devices')->group(function () {
-                    Route::apiResource('', GardenDeviceController::class)->except(['show', 'update']);
+                    Route::apiResource('', GardenDeviceController::class)->except(['show', 'update', 'destroy']);
                     Route::prefix('{garden_device}')->group(function () {
                         Route::prefix('modules')->group(function () {
                             Route::get('analytics', [AnalyticController::class, 'module']);
-                            Route::prefix('{module}')->group(function () {
+                            Route::prefix('use/{module}')->group(function () {
                                 Route::post('', [GardenDeviceModuleController::class, 'store']);
                             });
-                            Route::apiResource('', GardenDeviceModuleController::class)->except(['store', 'show']);
+                            Route::prefix('{garden_device_module}')->group(function () {
+                                Route::put('', [GardenDeviceModuleController::class, 'update']);
+                            });
+                            Route::apiResource('', GardenDeviceModuleController::class)->except(['store', 'show', 'destroy']);
                         });
                         Route::apiResource('settings', DeviceSettingController::class)->except(['show']);
                         Route::get('analytics', [AnalyticController::class, 'device']);

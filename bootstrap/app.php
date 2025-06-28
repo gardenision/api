@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AuthenticateDevice;
+use App\Http\Middleware\LogRequest;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -17,6 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->validateCsrfTokens();
         $middleware->statefulApi();
+        $middleware->use([
+            LogRequest::class,
+        ]);
         $middleware->alias([
             'role' => RoleMiddleware::class,
             'auth.device' => AuthenticateDevice::class,

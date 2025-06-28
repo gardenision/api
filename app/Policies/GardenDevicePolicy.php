@@ -12,9 +12,13 @@ class GardenDevicePolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(User $user, Garden $garden): bool
     {
-        return in_array($user->role?->role?->name ?? '', ['admin', 'user']);
+        $role = $user->role?->role?->name;
+        if (! in_array($role ?? '', ['admin', 'user'])) return false;
+        if (in_array($role ?? '', ['user']) && $garden->user_id != $user->id) return false;
+        
+        return true;
     }
 
     /**
@@ -32,9 +36,13 @@ class GardenDevicePolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user, Garden $garden): bool
     {
-        return in_array($user->role?->role?->name ?? '', ['admin', 'user']);
+        $role = $user->role?->role?->name;
+        if (! in_array($role ?? '', ['admin', 'user'])) return false;
+        if (in_array($role ?? '', ['user']) && $garden->user_id != $user->id) return false;
+        
+        return true;
     }
 
     /**

@@ -11,7 +11,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('update', $this->garden, $this->garden_device);
+        return $this->user()->can('update', [$this->garden_device, $this->garden]);
     }
 
     /**

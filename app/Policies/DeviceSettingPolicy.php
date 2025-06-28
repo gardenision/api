@@ -11,9 +11,13 @@ class DeviceSettingPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(User $user, Device $device): bool
     {
-        return in_array($user->role?->role?->name ?? '', ['admin', 'user']);
+        $role = $user->role?->role?->name;
+        if (! in_array($role ?? '', ['admin', 'user'])) return false;
+        if (in_array($role ?? '', ['user']) && $device->user_id != $user->id) return false;
+        
+        return true;
     }
 
     public function viewAnyNotActive(Device $device): bool
@@ -36,10 +40,11 @@ class DeviceSettingPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user, Device $device): bool
     {
         $role = $user->role?->role?->name;
         if (! in_array($role ?? '', ['admin', 'user'])) return false;
+        if (in_array($role ?? '', ['user']) && $device->user_id != $user->id) return false;
         
         return true;
     }

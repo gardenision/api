@@ -47,8 +47,9 @@ class AuthenticateDevice
         $data['garden_device_module'] = null;
 
         if ($module) {
-            $garden_device_module = GardenDeviceModule::where('module_id', $module->id)->whereHas('garden_device.device', function ($query) use ($module) {
-                $query->where('device_type_id', $module->device_type_id);
+            $garden_device_module = GardenDeviceModule::where('module_id', $module->id)->whereHas('garden_device.device', function ($query) use ($data, $module) {
+                $query->where('id', $data['device']->id)
+                ->where('device_type_id', $module->device_type_id);
             })->first();
     
             if (!$garden_device_module) {

@@ -12,7 +12,7 @@ class IndexRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('viewAny', GardenDevice::class);
+        return $this->user()->can('viewAny', [GardenDevice::class, $this->garden]);
     }
 
     /**
