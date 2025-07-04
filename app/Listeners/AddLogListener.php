@@ -40,14 +40,14 @@ class AddLogListener extends Listener
 
             // total_logs_perday
             $total_logs_perday = Analytic::where('type', '=', 'total_logs_perday')
-            ->where('created_at', '>=', now()->subDays(1)->startOfDay())
+            ->where('created_at', '>=', now()->startOfDay())
             ->where('created_at', '<=', now()->endOfDay())
             ->first();
 
             if (! $total_logs_perday) {
                 // count logs per day
                 $total_logs_perday = Log::where('loggable_type', '=', GardenDeviceModule::class)
-                ->where('created_at', '>=', now()->subDays(1)->startOfDay())
+                ->where('created_at', '>=', now()->startOfDay())
                 ->where('created_at', '<=', now()->endOfDay())
                 ->count();
 
@@ -68,7 +68,7 @@ class AddLogListener extends Listener
             $total_user_logs_perday = Analytic::where('type', '=', 'total_user_logs_perday')
             ->where('analyticable_type', '=', User::class)
             ->where('analyticable_id', '=', $user_id)
-            ->where('created_at', '>=', now()->subDays(1)->startOfDay())
+            ->where('created_at', '>=', now()->startOfDay())
             ->where('created_at', '<=', now()->endOfDay())
             ->first();
 
@@ -79,7 +79,7 @@ class AddLogListener extends Listener
                         $subQuery->where('user_id', '=', $user_id);
                     });
                 })
-                ->where('created_at', '>=', now()->subDays(1)->startOfDay())
+                ->where('created_at', '>=', now()->startOfDay())
                 ->where('created_at', '<=', now()->endOfDay())
                 ->count();
 
@@ -101,7 +101,7 @@ class AddLogListener extends Listener
             if ($garden_device_module->module->type === 'sensor') {
                 // total_logs_sensor_perday
                 $total_logs_sensor_perday = Analytic::where('type', '=', 'total_logs_sensor_perday')
-                ->where('created_at', '>=', now()->subDays(1)->startOfDay())
+                ->where('created_at', '>=', now()->startOfDay())
                 ->where('created_at', '<=', now()->endOfDay())
                 ->first();
 
@@ -112,7 +112,7 @@ class AddLogListener extends Listener
                             $subQuery->where('type', '=', 'sensor');
                         });
                     })
-                    ->where('created_at', '>=', now()->subDays(1)->startOfDay())
+                    ->where('created_at', '>=', now()->startOfDay())
                     ->where('created_at', '<=', now()->endOfDay())
                     ->count();
 
@@ -133,7 +133,7 @@ class AddLogListener extends Listener
                 $total_user_logs_sensor_perday = Analytic::where('type', '=', 'total_user_logs_sensor_perday')
                 ->where('analyticable_type', '=', User::class)
                 ->where('analyticable_id', '=', $user_id)
-                ->where('created_at', '>=', now()->subDays(1)->startOfDay())
+                ->where('created_at', '>=', now()->startOfDay())
                 ->where('created_at', '<=', now()->endOfDay())
                 ->first();
 
@@ -147,7 +147,7 @@ class AddLogListener extends Listener
                             $subQuery->where('type', '=', 'sensor');
                         });
                     })
-                    ->where('created_at', '>=', now()->subDays(1)->startOfDay())
+                    ->where('created_at', '>=', now()->startOfDay())
                     ->where('created_at', '<=', now()->endOfDay())
                     ->count();
 
@@ -169,7 +169,7 @@ class AddLogListener extends Listener
 
                 // total_logs_actuator_perday
                 $total_logs_actuator_perday = Analytic::where('type', '=', 'total_logs_actuator_perday')
-                ->where('created_at', '>=', now()->subDays(1)->startOfDay())
+                ->where('created_at', '>=', now()->startOfDay())
                 ->where('created_at', '<=', now()->endOfDay())
                 ->first();
 
@@ -180,7 +180,7 @@ class AddLogListener extends Listener
                             $subQuery->where('type', '=', 'actuator');
                         });
                     })
-                    ->where('created_at', '>=', now()->subDays(1)->startOfDay())
+                    ->where('created_at', '>=', now()->startOfDay())
                     ->where('created_at', '<=', now()->endOfDay())
                     ->count();
 
@@ -201,7 +201,7 @@ class AddLogListener extends Listener
                 $total_user_logs_actuator_perday = Analytic::where('type', '=', 'total_user_logs_actuator_perday')
                 ->where('analyticable_type', '=', User::class)
                 ->where('analyticable_id', '=', $user_id)
-                ->where('created_at', '>=', now()->subDays(1)->startOfDay())
+                ->where('created_at', '>=', now()->startOfDay())
                 ->where('created_at', '<=', now()->endOfDay())
                 ->first();
 
@@ -215,7 +215,7 @@ class AddLogListener extends Listener
                             $subQuery->where('type', '=', 'actuator');
                         });
                     })
-                    ->where('created_at', '>=', now()->subDays(1)->startOfDay())
+                    ->where('created_at', '>=', now()->startOfDay())
                     ->where('created_at', '<=', now()->endOfDay())
                     ->count();
 

@@ -119,19 +119,19 @@ class AnalyticController extends Controller
         $data['total_actuators'] = Analytic::where('type', '=', 'total_actuators')->first()?->data['value'] ?? 0;
 
         // total logs per day
-        $data['total_logs_perday'] = Analytic::where('type', '=', 'total_logs_perday')->where('timestamp', '>=', now()->subDays(1)->startOfDay())->where('timestamp', '<=', now()->endOfDay())->get();
+        $data['total_logs_perday'] = Analytic::where('type', '=', 'total_logs_perday')->where('timestamp', '>=', now()->subDays(7)->startOfDay())->where('timestamp', '<=', now()->endOfDay())->get();
         $data['total_logs_perday'] = $data['total_logs_perday']->map(function ($log) {
             return $log->data['value'];
         });
 
         // total logs sensor per day
-        $data['total_logs_sensor_perday'] = Analytic::where('type', '=', 'total_logs_sensor_perday')->where('timestamp', '>=', now()->subDays(1)->startOfDay())->where('timestamp', '<=', now()->endOfDay())->get();
+        $data['total_logs_sensor_perday'] = Analytic::where('type', '=', 'total_logs_sensor_perday')->where('timestamp', '>=', now()->subDays(7)->startOfDay())->where('timestamp', '<=', now()->endOfDay())->get();
         $data['total_logs_sensor_perday'] = $data['total_logs_sensor_perday']->map(function ($log) {
             return $log->data['value'];
         });
 
         // total logs actuator per day
-        $data['total_logs_actuator_perday'] = Analytic::where('type', '=', 'total_logs_actuator_perday')->where('timestamp', '>=', now()->subDays(1)->startOfDay())->where('timestamp', '<=', now()->endOfDay())->get();
+        $data['total_logs_actuator_perday'] = Analytic::where('type', '=', 'total_logs_actuator_perday')->where('timestamp', '>=', now()->subDays(7)->startOfDay())->where('timestamp', '<=', now()->endOfDay())->get();
         $data['total_logs_actuator_perday'] = $data['total_logs_actuator_perday']->map(function ($log) {
             return $log->data['value'];
         });
@@ -172,19 +172,19 @@ class AnalyticController extends Controller
         $data['total_user_actuators'] = Analytic::where('type', '=', 'total_user_actuators')->where('analyticable_type', '=', User::class)->where('analyticable_id', '=', $request->user()->id)->first()?->data['value'] ?? 0;
 
         // total logs per day
-        $data['total_user_logs_perday'] = Analytic::where('type', '=', 'total_user_logs_perday')->where('analyticable_type', '=', User::class)->where('analyticable_id', '=', $request->user()->id)->where('timestamp', '>=', now()->subDays(1)->startOfDay())->where('timestamp', '<=', now()->endOfDay())->get();
+        $data['total_user_logs_perday'] = Analytic::where('type', '=', 'total_user_logs_perday')->where('analyticable_type', '=', User::class)->where('analyticable_id', '=', $request->user()->id)->where('timestamp', '>=', now()->subDays(7)->startOfDay())->where('timestamp', '<=', now()->endOfDay())->get();
         $data['total_user_logs_perday'] = $data['total_user_logs_perday']->map(function ($log) {
             return $log->data['value'];
         });
 
         // total logs sensor per day
-        $data['total_user_logs_sensor_perday'] = Analytic::where('type', '=', 'total_user_logs_sensor_perday')->where('analyticable_type', '=', User::class)->where('analyticable_id', '=', $request->user()->id)->where('timestamp', '>=', now()->subDays(1)->startOfDay())->where('timestamp', '<=', now()->endOfDay())->get();
+        $data['total_user_logs_sensor_perday'] = Analytic::where('type', '=', 'total_user_logs_sensor_perday')->where('analyticable_type', '=', User::class)->where('analyticable_id', '=', $request->user()->id)->where('timestamp', '>=', now()->subDays(7)->startOfDay())->where('timestamp', '<=', now()->endOfDay())->get();
         $data['total_user_logs_sensor_perday'] = $data['total_user_logs_sensor_perday']->map(function ($log) {
             return $log->data['value'];
         });
 
         // total logs actuator per day
-        $data['total_user_logs_actuator_perday'] = Analytic::where('type', '=', 'total_user_logs_actuator_perday')->where('analyticable_type', '=', User::class)->where('analyticable_id', '=', $request->user()->id)->where('timestamp', '>=', now()->subDays(1)->startOfDay())->where('timestamp', '<=', now()->endOfDay())->get();
+        $data['total_user_logs_actuator_perday'] = Analytic::where('type', '=', 'total_user_logs_actuator_perday')->where('analyticable_type', '=', User::class)->where('analyticable_id', '=', $request->user()->id)->where('timestamp', '>=', now()->subDays(7)->startOfDay())->where('timestamp', '<=', now()->endOfDay())->get();
         $data['total_user_logs_actuator_perday'] = $data['total_user_logs_actuator_perday']->map(function ($log) {
             return $log->data['value'];
         });

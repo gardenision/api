@@ -75,7 +75,7 @@ class LogController extends Controller
 
             DB::commit();
 
-            return response()->json([$response, 'test']);
+            return response()->json($response);
         } catch (\Exception $e) {
             DB::rollBack();
 
