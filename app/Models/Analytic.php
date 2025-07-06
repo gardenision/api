@@ -16,6 +16,7 @@ class Analytic extends Model
         'timestamp',
         'type',
         'data',
+        'created_at',
     ];
 
     protected $casts = [
