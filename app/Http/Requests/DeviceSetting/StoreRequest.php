@@ -12,7 +12,7 @@ class StoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('viewAny', Setting::class);
+        return $this->user()->can('viewAny', [Setting::class, $this->route('garden_device')]);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\DeviceSetting;
 
+use App\Models\GardenDevice;
 use App\Models\Setting;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
@@ -13,7 +14,11 @@ class IndexRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('viewAny', Setting::class);
+        if (! $this->route('garden_device')) {
+            return false;
+        }
+
+        return $this->user()->can('viewAny', [Setting::class, $this->route('garden_device')]);
     }
 
     /**

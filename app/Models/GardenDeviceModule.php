@@ -32,4 +32,9 @@ class GardenDeviceModule extends Model
     {
         return $this->morphMany(Log::class, 'loggable');
     }
+
+    public function settings()
+    {
+        return $this->morphMany(Setting::class, 'settingable');
+    }
 }

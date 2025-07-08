@@ -3,6 +3,8 @@
 namespace App\Policies;
 
 use App\Models\Device;
+use App\Models\GardenDevice;
+use App\Models\GardenDeviceModule;
 use App\Models\Setting;
 use App\Models\User;
 
@@ -11,16 +13,16 @@ class DeviceSettingPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user, Device $device): bool
+    public function viewAny(User $user, GardenDevice $garden_device): bool
     {
         $role = $user->role?->role?->name;
         if (! in_array($role ?? '', ['admin', 'user'])) return false;
-        if (in_array($role ?? '', ['user']) && $device->user_id != $user->id) return false;
+        if (in_array($role ?? '', ['user']) && $garden_device->garden->user_id != $user->id) return false;
         
         return true;
     }
 
-    public function viewAnyNotActive(Device $device): bool
+    public function viewAnyDevice(Device $device): bool
     {
         return true;
     }
@@ -52,11 +54,11 @@ class DeviceSettingPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Setting $setting): bool
+    public function update(User $user, GardenDevice $garden_device): bool
     {
         $role = $user->role?->role?->name;
         if (! in_array($role ?? '', ['admin', 'user'])) return false;
-        if (in_array($role ?? '', ['user']) && $setting->settingable->user_id != $user->id) return false;
+        if (in_array($role ?? '', ['user']) && $garden_device->garden->user_id != $user->id) return false;
         
         return true;
     }

@@ -65,7 +65,15 @@ Route::middleware([
                             });
                             Route::apiResource('', GardenDeviceModuleController::class)->except(['store', 'show', 'destroy']);
                         });
-                        Route::apiResource('settings', DeviceSettingController::class)->except(['show']);
+                        Route::prefix('settings')->group(function () {
+                            Route::get('', [DeviceSettingController::class, 'index']);
+                            Route::post('', [DeviceSettingController::class, 'store']);
+                            Route::post('{garden_device_module}', [DeviceSettingController::class, 'store']);
+                            Route::put('{garden_device_module}/{key}', [DeviceSettingController::class, 'update']);
+                            Route::put('{key}', [DeviceSettingController::class, 'update']);
+                            Route::delete('{garden_device_module}/{key}', [DeviceSettingController::class, 'destroy']);
+                            Route::delete('{key}', [DeviceSettingController::class, 'destroy']);
+                        });
                         Route::get('analytics', [AnalyticController::class, 'device']);
                     });
                 });
@@ -73,7 +81,8 @@ Route::middleware([
         });
     });
 
-    Route::get('device/{serial_number}/settings', [DeviceSettingController::class, 'show_not_activate'])->middleware('auth.device');
+    Route::get('device/{serial_number}/settings', [DeviceSettingController::class, 'device'])->middleware('auth.device');
+    Route::get('device/{serial_number}/module/{module}/settings', [DeviceSettingController::class, 'device'])->middleware('auth.device');
     Route::post('device/{serial_number}/logs', [LogController::class, 'store'])->middleware('auth.device');
     Route::post('device/{serial_number}/module/{module}/logs', [LogController::class, 'store'])->middleware('auth.device');
 });

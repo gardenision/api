@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\DeviceSetting;
 
+use App\Models\Setting;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DestroyRequest extends FormRequest
@@ -11,7 +12,7 @@ class DestroyRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('update', $this->setting);
+        return $this->user()->can('update', [Setting::class, $this->route('garden_device')]);
     }
 
     /**
