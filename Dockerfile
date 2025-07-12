@@ -47,4 +47,4 @@ RUN cp .env.example .env
 
 # Expose port and start PHP-FPM & Nginx
 EXPOSE 80
-CMD service nginx start && php artisan reverb:start --host=0.0.0.0 --port=6001 && php-fpm
+CMD service nginx start && php-fpm
