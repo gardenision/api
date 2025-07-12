@@ -31,6 +31,9 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . .
 
+# Set environment variables from copy of .env.example file
+RUN cp .env.example .env
+
 # Install PHP dependencies
 RUN composer install --optimize-autoloader
 
@@ -42,9 +45,6 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 # Copy Nginx configuration
 COPY nginx.conf /etc/nginx/sites-enabled/default
-
-# Set environment variables from copy of .env.example file
-RUN cp .env.example .env
 
 # Copy Supervisor config file
 COPY supervisord.conf /etc/supervisord.conf
