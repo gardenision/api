@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\AddLog;
+use App\Events\GardenDeviceModuleUpdated;
 use App\Http\Requests\Log\IndexRequest;
 use App\Http\Requests\Log\StoreRequest;
 use App\Models\Device;
@@ -41,6 +42,8 @@ class LogController extends Controller
     
                 $garden_device_module->unit_value = $request->context['value'];
                 $garden_device_module->save();
+
+                event(new GardenDeviceModuleUpdated($garden_device_module->toArray(), $garden_device_module->garden_device->garden->user_id));
     
                 $response['module'] = $garden_device_module->load('module');
             } else if ($garden_device) {
