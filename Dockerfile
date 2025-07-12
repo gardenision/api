@@ -34,7 +34,7 @@ COPY . .
 RUN composer install --optimize-autoloader
 
 # Install Node.js dependencies and build assets
-RUN npm install && npm run build
+# RUN npm install && npm run build
 
 # Set permissions for storage and bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
