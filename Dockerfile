@@ -14,6 +14,7 @@ RUN apt-get install -y \
     libxml2-dev \
     libzip-dev \
     nginx \
+    supervisor \
     libpq-dev \
     && docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip
 
@@ -45,6 +46,11 @@ COPY nginx.conf /etc/nginx/sites-enabled/default
 # Set environment variables from copy of .env.example file
 RUN cp .env.example .env
 
-# Expose port and start PHP-FPM & Nginx
-EXPOSE 80
-CMD service nginx start && php-fpm
+# Copy Supervisor config file
+COPY supervisord.conf /etc/supervisord.conf
+
+# Expose ports for web and websocket
+EXPOSE 80 6001
+
+# Run all services with supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
